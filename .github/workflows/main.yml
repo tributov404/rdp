@@ -10,6 +10,8 @@ jobs:
     - name: Enable VNC
       run: |
         sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "Qwerty1234" -restart -agent -privs -all
+        sudo defaults write /Library/Preferences/com.apple.RemoteManagement VNCAlwaysStartOnConsole -bool true
+        sudo launchctl kickstart -k system/com.apple.screensharing
 
     - name: Install noVNC + websockify
       run: |
@@ -26,7 +28,7 @@ jobs:
       if: always()
       run: |
         echo "===================================================="
-        echo "  Username: runneradmin"
+        echo "  Username: runner"
         echo "  Password: Qwerty1234"
         echo "  Open the cloudflared URL in browser"
         echo "===================================================="
