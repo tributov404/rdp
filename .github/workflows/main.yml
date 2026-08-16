@@ -7,11 +7,22 @@ jobs:
     runs-on: macos-latest
     
     steps:                 
-    - name: Enable VNC
+    - name: Create user and Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -privs -all -clientopts -setvnclegacy -vnclegacy yes
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw "1234"
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent
+        sudo dscl . -create /Users/runneradmin
+        sudo dscl . -create /Users/runneradmin UserShell /bin/bash
+        sudo dscl . -create /Users/runneradmin RealName Runner_Admin
+        sudo dscl . -create /Users/runneradmin UniqueID 1001
+        sudo dscl . -create /Users/runneradmin PrimaryGroupID 80
+        sudo dscl . -create /Users/runneradmin NFSHomeDirectory /Users/runneradmin
+        sudo dscl . -passwd /Users/runneradmin P@ssw0rd!
+        sudo createhomedir -c -u runneradmin > /dev/null
+        sudo dscl . -append /Groups/admin GroupMembership runneradmin
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -allowAccessFor -allUsers -privs -all
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes
+        echo runnerrdp | perl -we 'BEGIN { @k = unpack "C*", pack "H*", "1734516E8BA8C5E2FF1C39567390ADCA"}; $_ = <>; chomp; s/^(.{8}).*/$1/; @p = unpack "C*", $_; foreach (@k) { printf "%02X", $_ ^ (shift @p || 0) }; print "\n"' | sudo tee /Library/Preferences/com.apple.VNCSettings.txt
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
         sleep 3
         nc -z localhost 5900 && echo "VNC OK" || echo "VNC FAILED"
 
@@ -25,5 +36,7 @@ jobs:
       if: always()
       run: |
         echo "===================================================="
-        echo "  Password: 1234"
+        echo "  Username: runneradmin"
+        echo "  Password: P@ssw0rd!"
+        echo "  Connect via RealVNC to bore address above"
         echo "===================================================="
