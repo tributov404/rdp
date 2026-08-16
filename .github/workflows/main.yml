@@ -9,27 +9,19 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -allowAccessFor -allUsers -privs -all -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent
-        sudo launchctl kickstart -k system/com.apple.screensharing
-        sleep 3
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent -privs -all
 
-    - name: Install noVNC + websockify
-      run: |
-        pip3 install websockify --break-system-packages
-        git clone https://github.com/novnc/noVNC.git /tmp/noVNC
+    - name: Install bore
+      run: brew install bore-cli
 
-    - name: Start VNC + noVNC + Cloudflare Tunnel
-      run: |
-        websockify --web /tmp/noVNC 6080 127.0.0.1:5900 &
-        sleep 2
-        curl -sL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-arm64.tgz | tar xz -C /tmp
-        /tmp/cloudflared tunnel --url http://localhost:6080
+    - name: Start bore tunnel
+      run: bore local 5900 --to bore.pub
 
     - name: Connection Info
       if: always()
       run: |
         echo "===================================================="
+        echo "  Username: runner"
         echo "  Password: 1234"
-        echo "  Open the cloudflared URL in browser"
+        echo "  Connect via RealVNC to bore address above"
         echo "===================================================="
