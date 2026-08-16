@@ -13,7 +13,7 @@ jobs:
 
     - name: Install noVNC + websockify
       run: |
-        pip3 install websockify
+        pip3 install websockify --break-system-packages
         git clone https://github.com/novnc/noVNC.git /tmp/noVNC
 
     - name: Start VNC + noVNC + Cloudflare Tunnel
