@@ -9,13 +9,13 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "Qwerty1234" -restart -agent -privs -all
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "}~k@)4HgYV[l\W1" -restart -agent -privs -all
 
     - name: Connection Info
       run: |
         echo "===================================================="
         echo "  Username: runneradmin"
-        echo "  Password: Qwerty1234"
+        echo "  Password: }~k@)4HgYV[l\W1"
         echo "  VNC Port: 5900"
         echo "===================================================="
 
