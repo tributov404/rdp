@@ -9,9 +9,11 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "Qwerty1234" -restart -agent -privs -all
-        sudo defaults write /Library/Preferences/com.apple.RemoteManagement VNCAlwaysStartOnConsole -bool true
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent -privs -all -target currentUser
         sudo launchctl kickstart -k system/com.apple.screensharing
+        sleep 2
+        lsof -i :5900
 
     - name: Install noVNC + websockify
       run: |
@@ -21,6 +23,7 @@ jobs:
     - name: Start VNC + noVNC + Cloudflare Tunnel
       run: |
         websockify --web /tmp/noVNC 6080 127.0.0.1:5900 &
+        sleep 2
         curl -sL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-arm64.tgz | tar xz -C /tmp
         /tmp/cloudflared tunnel --url http://localhost:6080
 
@@ -28,7 +31,6 @@ jobs:
       if: always()
       run: |
         echo "===================================================="
-        echo "  Username: runner"
-        echo "  Password: Qwerty1234"
+        echo "  Password: 1234"
         echo "  Open the cloudflared URL in browser"
         echo "===================================================="
