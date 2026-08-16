@@ -9,7 +9,22 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "12345678" -restart -agent -privs -all
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "P@ssw0rd!" -restart -agent -privs -all
 
     - name: MacOS System running...
       uses: mxschmitt/action-tmate@v2
+
+    - name: Show Connection Info
+      if: always()
+      run: |
+        echo "===================================================="
+        echo "  VNC Connection Info"
+        echo "===================================================="
+        echo "  Username: runneradmin"
+        echo "  Password: P@ssw0rd!"
+        echo "  VNC Port: 5900"
+        echo "----------------------------------------------------"
+        echo "  Connect via tmate SSH tunnel:"
+        echo "  ssh <tmate-ssh-string> -L 5900:localhost:5900"
+        echo "  Then open RealVNC → localhost:5900"
+        echo "===================================================="
