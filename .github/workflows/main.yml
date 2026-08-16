@@ -9,12 +9,11 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
-        sudo defaults write /Library/Preferences/com.apple.RemoteManagement.plist VNCAlwaysStartOnConsole -bool true
         sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent -privs -all
-        sudo launchctl kickstart -k system/com.apple.screensharing
+        sudo launchctl bootout system/com.apple.screensharing 2>/dev/null || true
+        sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
         sleep 3
-        sudo lsof -i :5900
+        nc -z localhost 5900 && echo "VNC OK" || echo "VNC FAILED"
 
     - name: Install bore
       run: brew install bore-cli
@@ -27,5 +26,4 @@ jobs:
       run: |
         echo "===================================================="
         echo "  Password: 1234"
-        echo "  Connect via RealVNC to bore address above"
         echo "===================================================="
