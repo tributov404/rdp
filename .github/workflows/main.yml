@@ -9,15 +9,13 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        RANDOM_PW=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 12)
-        echo "VNC_PASSWORD=$RANDOM_PW" >> $GITHUB_ENV
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "$RANDOM_PW" -restart -agent -privs -all -noaskpass
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "Qwerty1234" -restart -agent -privs -all
 
     - name: Connection Info
       run: |
         echo "===================================================="
         echo "  Username: runneradmin"
-        echo "  Password: ${{ env.VNC_PASSWORD }}"
+        echo "  Password: Qwerty1234"
         echo "  VNC Port: 5900"
         echo "===================================================="
 
