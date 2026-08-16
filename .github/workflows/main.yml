@@ -11,7 +11,7 @@ jobs:
       run: |
         RANDOM_PW=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 12)
         echo "VNC_PASSWORD=$RANDOM_PW" >> $GITHUB_ENV
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "$RANDOM_PW" -restart -agent -privs -all
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "$RANDOM_PW" -restart -agent -privs -all -noaskpass
 
     - name: Connection Info
       run: |
