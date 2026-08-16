@@ -9,10 +9,12 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+        sudo defaults write /Library/Preferences/com.apple.RemoteManagement.plist VNCAlwaysStartOnConsole -bool true
         sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent -privs -all
         sudo launchctl kickstart -k system/com.apple.screensharing
         sleep 3
-        sudo lsof -i :5900 || echo "Port 5900 not listening"
+        sudo lsof -i :5900
 
     - name: Install bore
       run: brew install bore-cli
