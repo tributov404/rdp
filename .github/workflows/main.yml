@@ -9,9 +9,9 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "1234" -restart -agent -privs -all
-        sudo launchctl bootout system/com.apple.screensharing 2>/dev/null || true
-        sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -privs -all -clientopts -setvnclegacy -vnclegacy yes
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw "1234"
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent
         sleep 3
         nc -z localhost 5900 && echo "VNC OK" || echo "VNC FAILED"
 
