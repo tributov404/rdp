@@ -9,22 +9,17 @@ jobs:
     steps:                 
     - name: Enable VNC
       run: |
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "P@ssw0rd!" -restart -agent -privs -all
+        RANDOM_PW=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 12)
+        echo "VNC_PASSWORD=$RANDOM_PW" >> $GITHUB_ENV
+        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "$RANDOM_PW" -restart -agent -privs -all
+
+    - name: Connection Info
+      run: |
+        echo "===================================================="
+        echo "  Username: runneradmin"
+        echo "  Password: ${{ env.VNC_PASSWORD }}"
+        echo "  VNC Port: 5900"
+        echo "===================================================="
 
     - name: MacOS System running...
       uses: mxschmitt/action-tmate@v2
-
-    - name: Show Connection Info
-      if: always()
-      run: |
-        echo "===================================================="
-        echo "  VNC Connection Info"
-        echo "===================================================="
-        echo "  Username: runneradmin"
-        echo "  Password: P@ssw0rd!"
-        echo "  VNC Port: 5900"
-        echo "----------------------------------------------------"
-        echo "  Connect via tmate SSH tunnel:"
-        echo "  ssh <tmate-ssh-string> -L 5900:localhost:5900"
-        echo "  Then open RealVNC → localhost:5900"
-        echo "===================================================="
